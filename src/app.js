@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const morgan = require('morgan'); // Middleware for logging
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -26,12 +27,13 @@ app.use(rateLimiter);
 
 app.use(passport.initialize());
 
+app.use(morgan('dev')); // This logs all requests to the console
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
