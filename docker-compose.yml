@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.real
+    ports:
+      - "5001:5000"
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    volumes:
+     - .:/app:cached
+    #  - node_modules:/app/node_modules
+# Anonymous volume hides host node_modules, preserving container's node_modules
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+  node_modules:
