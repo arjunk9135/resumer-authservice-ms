@@ -6,6 +6,7 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/generate
 const { sendResetPasswordEmail } = require('../services/emailService');
 
 const signup = async (req, res, next) => {
+  console.log('Signup controller hit');
   try {
     const { fullName, email, username, password } = req.body;
     const existingEmail = await User.findOne({ email });
@@ -22,7 +23,8 @@ const signup = async (req, res, next) => {
       email,
       username,
       password: hashedPassword,
-      role: 'user',
+      roles: ['NORMAL_USER'], // Default role
+      accountStatus: 'active',
     });
     await user.save();
     res.status(201).json({ message: 'User registered successfully' });

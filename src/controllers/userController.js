@@ -51,9 +51,46 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const addRoleToUser = async (req, res, next) => {
+  try {
+    const { role } = req.body;
+    if (!['NORMAL_USER', 'ELITE_USER', 'ADMIN'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (!user.roles.includes(role)) {
+      user.roles.push(role);
+      await user.save();
+    }
+    res.json({ message: 'Role added successfully', roles: user.roles });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const removeRoleFromUser = async (req, res, next) => {
+  try {
+    const { role } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.roles = user.roles.filter((r) => r !== role);
+    await user.save();
+    res.json({ message: 'Role removed successfully', roles: user.roles });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
   updateUserRole,
   deleteUser,
+  addRoleToUser,
+  removeRoleFromUser,
 };

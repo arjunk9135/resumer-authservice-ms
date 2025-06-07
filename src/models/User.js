@@ -25,17 +25,33 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: function() { return !this.googleId; },
+    required: function () {
+      return !this.googleId;
+    },
   },
   googleId: {
     type: String,
     unique: true,
     sparse: true,
   },
-  role: {
+  roles: {
+    type: [String],
+    enum: ['NORMAL_USER', 'ELITE_USER', 'ADMIN'],
+    default: ['NORMAL_USER'],
+  },
+  lastLogin: {
+    type: Date,
+  },
+  lastLoginLocation: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
+  },
+  deviceType: {
+    type: String,
+  },
+  accountStatus: {
+    type: String,
+    enum: ['active', 'blocked'],
+    default: 'active',
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,

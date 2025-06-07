@@ -23,7 +23,11 @@ const { changePasswordValidator } = require('../validators/authValidators');
 
 const router = express.Router();
 
-router.post('/signup', signupValidator, validateRequest, signup);
+router.post('/signup', signupValidator, validateRequest, (req, res, next) => {
+  console.log('Signup route hit');
+  next();
+}, signup);
+// router.post('/signup', signup);
 router.post('/signin', loginValidator, validateRequest, signin);
 router.post('/refresh-token', refreshToken);
 router.post('/logout', logout);

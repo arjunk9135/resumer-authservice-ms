@@ -27,12 +27,18 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-
-const authorizeAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Forbidden: Admins only' });
+const authorizeRole = (roles) => (req, res, next) => {
+  if (!req.user || !req.user.roles.some((role) => roles.includes(role))) {
+    return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
   }
   next();
 };
 
-module.exports = { authenticate, authorizeAdmin };
+const authorizeAdmin = (req, res, next) => {
+  if (!req.user || !req.user.roles.includes('ADMIN')) {
+    return res.status(403).json({ message: 'Forbidden: Admin access required' });
+  }
+  next();
+};
+
+module.exports = { authenticate, authorizeRole, authorizeAdmin };
